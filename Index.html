@@ -1,0 +1,466 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Public+Sans:wght@400;500;600;700&display=swap">
+<style>
+  html,body{margin:0}
+  img{max-width:100%}
+  [hidden]{display:none!important}
+  :root{padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
+</style>
+<title>Escala de Autocuidado</title>
+<style>
+  :root{
+    --bg:#eef2f0;
+    --surface:#ffffff;
+    --surface-2:#f5f8f6;
+    --ink:#1c2b29;
+    --ink-soft:#4c605c;
+    --muted:#7b8b87;
+    --line:#d9e2df;
+    --accent:#2f7d6e;
+    --accent-deep:#215a4f;
+    --accent-soft:#dcece7;
+    --good:#2f7d6e;
+    --mid:#c98a2b;
+    --low:#c05339;
+    --shadow:0 1px 2px rgba(24,43,41,.05),0 8px 28px rgba(24,43,41,.07);
+    --radius:16px;
+    --font-body:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+    --font-display:"Fraunces","Georgia",serif;
+  }
+  :root:not([data-theme="light"]){
+    @media (prefers-color-scheme: dark){
+      --bg:#10201c;
+      --surface:#172b26;
+      --surface-2:#1d332d;
+      --ink:#e8efec;
+      --ink-soft:#adc0ba;
+      --muted:#7f9791;
+      --line:#294039;
+      --accent:#5cbfa9;
+      --accent-deep:#8ad6c4;
+      --accent-soft:#213f38;
+      --good:#5cbfa9;
+      --mid:#e2ab5c;
+      --low:#e28368;
+      --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#10201c;
+    --surface:#172b26;
+    --surface-2:#1d332d;
+    --ink:#e8efec;
+    --ink-soft:#adc0ba;
+    --muted:#7f9791;
+    --line:#294039;
+    --accent:#5cbfa9;
+    --accent-deep:#8ad6c4;
+    --accent-soft:#213f38;
+    --good:#5cbfa9;
+    --mid:#e2ab5c;
+    --low:#e28368;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.35);
+  }
+
+  *{box-sizing:border-box}
+  body{background:var(--bg);color:var(--ink);font-family:var(--font-body);line-height:1.55;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:760px;margin:0 auto;padding-block:0;padding-left:16px;padding-right:16px}
+
+  /* progress bar */
+  .topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+  .topbar .wrap{display:flex;align-items:center;gap:14px;padding-block:12px}
+  .topbar .eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);white-space:nowrap;font-weight:600}
+  .track{flex:1;height:8px;border-radius:99px;background:var(--surface-2);overflow:hidden;border:1px solid var(--line)}
+  .fill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent-deep));border-radius:99px;transition:width .35s ease}
+  .count{font-variant-numeric:tabular-nums;font-size:13px;color:var(--ink-soft);white-space:nowrap;font-weight:600}
+
+  header.hero{padding-block:34px 8px}
+  .kicker{font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:12px}
+  h1{font-family:var(--font-display);font-weight:600;font-size:clamp(28px,6vw,42px);line-height:1.08;margin:0 0 14px;text-wrap:balance;letter-spacing:-.01em}
+  .lede{font-size:16.5px;color:var(--ink-soft);max-width:60ch;margin:0}
+
+  .panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+  .intro{padding:26px 22px;margin-top:22px}
+  .intro h2{font-family:var(--font-display);font-weight:600;font-size:20px;margin:0 0 12px}
+  .scalekey{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 4px}
+  .chip{display:inline-flex;align-items:center;gap:7px;background:var(--surface-2);border:1px solid var(--line);border-radius:99px;padding:6px 13px;font-size:13.5px;color:var(--ink-soft);font-weight:500}
+  .chip b{color:var(--ink);font-variant-numeric:tabular-nums}
+  .note{font-size:13.5px;color:var(--muted);margin-top:16px}
+
+  .btn{appearance:none;border:none;cursor:pointer;font-family:inherit;font-weight:600;font-size:15.5px;border-radius:12px;padding:14px 24px;transition:transform .08s ease,background .2s ease;display:inline-flex;align-items:center;gap:9px}
+  .btn:active{transform:translateY(1px)}
+  .btn-primary{background:var(--accent);color:#fff}
+  .btn-primary:hover{background:var(--accent-deep)}
+  :root[data-theme="dark"] .btn-primary,:root:not([data-theme="light"]) .btn-primary{color:#08211c}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn-primary{color:#08211c}}
+  .btn-ghost{background:transparent;color:var(--accent);border:1.5px solid var(--line)}
+  .btn-ghost:hover{border-color:var(--accent)}
+  .btn:disabled{opacity:.45;cursor:not-allowed}
+  .btn-row{display:flex;flex-wrap:wrap;gap:12px;margin-top:22px;align-items:center}
+
+  /* questions */
+  #form{margin-top:20px;display:flex;flex-direction:column;gap:14px;padding-bottom:20px}
+  .q{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px 18px 16px;scroll-margin-top:80px}
+  .q.answered{border-color:var(--accent-soft)}
+  .q-head{display:flex;gap:12px;margin-bottom:14px}
+  .q-num{flex:none;width:30px;height:30px;border-radius:9px;background:var(--accent-soft);color:var(--accent-deep);display:grid;place-items:center;font-weight:700;font-size:14px;font-variant-numeric:tabular-nums}
+  .q.answered .q-num{background:var(--accent);color:#fff}
+  :root[data-theme="dark"] .q.answered .q-num,:root:not([data-theme="light"]) .q.answered .q-num{color:#08211c}
+  .q-text{font-size:16px;font-weight:500;padding-top:3px}
+  .opts{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  .opt{position:relative}
+  .opt input{position:absolute;opacity:0;width:0;height:0}
+  .opt label{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-align:center;padding:10px 6px;border:1.5px solid var(--line);border-radius:11px;cursor:pointer;transition:all .15s ease;min-height:62px;background:var(--surface-2)}
+  .opt label .n{font-weight:700;font-size:16px;font-variant-numeric:tabular-nums}
+  .opt label .t{font-size:11.5px;color:var(--muted);line-height:1.2;font-weight:600;text-transform:uppercase;letter-spacing:.03em}
+  .opt label:hover{border-color:var(--accent)}
+  .opt input:checked+label{background:var(--accent);border-color:var(--accent);color:#fff}
+  .opt input:checked+label .t{color:rgba(255,255,255,.85)}
+  :root[data-theme="dark"] .opt input:checked+label,:root:not([data-theme="light"]) .opt input:checked+label{color:#08211c}
+  :root[data-theme="dark"] .opt input:checked+label .t,:root:not([data-theme="light"]) .opt input:checked+label .t{color:rgba(8,33,28,.72)}
+  .opt input:focus-visible+label{outline:2px solid var(--accent-deep);outline-offset:2px}
+
+  /* results */
+  #results{margin-top:22px;display:flex;flex-direction:column;gap:16px}
+  .result-card{padding:26px 22px}
+  .score-line{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+  .score-big{font-family:var(--font-display);font-size:clamp(46px,13vw,68px);font-weight:600;line-height:1;font-variant-numeric:tabular-nums}
+  .score-of{font-size:17px;color:var(--muted);font-weight:600}
+  .level-badge{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:14px;padding:7px 15px;border-radius:99px;letter-spacing:.02em}
+  .dot{width:9px;height:9px;border-radius:50%}
+  .meter{margin-top:22px}
+  .meter-track{position:relative;height:16px;border-radius:99px;overflow:hidden;display:flex}
+  .meter-zone{height:100%}
+  .z-low{background:color-mix(in srgb,var(--low) 55%,var(--surface))}
+  .z-mid{background:color-mix(in srgb,var(--mid) 55%,var(--surface))}
+  .z-high{background:color-mix(in srgb,var(--good) 55%,var(--surface))}
+  .marker{position:absolute;top:-6px;width:4px;height:28px;background:var(--ink);border-radius:99px;transform:translateX(-50%);transition:left .8s cubic-bezier(.22,1,.36,1);box-shadow:0 0 0 3px var(--surface)}
+  .meter-labels{display:flex;justify-content:space-between;margin-top:12px;font-size:12px;color:var(--muted);font-weight:600}
+  .interp{font-size:16px;color:var(--ink-soft);margin-top:20px}
+  h3.sec{font-family:var(--font-display);font-weight:600;font-size:20px;margin:2px 0 4px}
+  .recs{display:flex;flex-direction:column;gap:10px}
+  .rec{display:flex;gap:13px;padding:15px 16px;background:var(--surface);border:1px solid var(--line);border-radius:13px;box-shadow:var(--shadow)}
+  .rec .ic{flex:none;width:32px;height:32px;border-radius:9px;background:var(--accent-soft);color:var(--accent-deep);display:grid;place-items:center;font-weight:700}
+  .rec h4{margin:0 0 3px;font-size:15px;font-weight:700}
+  .rec p{margin:0;font-size:14px;color:var(--ink-soft)}
+  .focus-item{font-size:14px;color:var(--ink-soft);padding:12px 15px;background:var(--surface-2);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:10px}
+  .focus-item b{color:var(--ink)}
+  .disclaimer{font-size:12.5px;color:var(--muted);line-height:1.5;padding:16px 18px;border:1px dashed var(--line);border-radius:12px}
+  .disclaimer b{color:var(--ink-soft)}
+  footer{padding:28px 0 8px;color:var(--muted);font-size:12.5px;text-align:center}
+  .alert{font-size:13.5px;color:var(--low);font-weight:600;margin-top:4px}
+  .theme-toggle{margin-left:auto;background:var(--surface-2);border:1px solid var(--line);color:var(--ink-soft);border-radius:9px;width:34px;height:34px;cursor:pointer;font-size:15px;display:grid;place-items:center}
+  @media (max-width:420px){
+    .opt label .t{font-size:10.5px}
+    .intro,.result-card{padding:22px 16px}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="topbar" id="topbar" hidden>
+  <div class="wrap">
+    <span class="eyebrow">Escala ASA</span>
+    <div class="track"><div class="fill" id="fill"></div></div>
+    <span class="count" id="count">0 / 24</span>
+  </div>
+</div>
+
+<div class="wrap">
+  <header class="hero">
+    <div style="display:flex;align-items:flex-start">
+      <div>
+        <div class="kicker">Evaluación de autocuidado</div>
+        <h1>Escala de Valoración de la Capacidad de Autocuidado</h1>
+      </div>
+      <button class="theme-toggle" id="themeBtn" title="Cambiar tema" aria-label="Cambiar tema">◐</button>
+    </div>
+    <p class="lede">Instrumento validado (ASA) basado en la teoría del déficit de autocuidado de Dorothea Orem. Responde con honestidad según lo que realmente haces, no lo que consideras ideal.</p>
+  </header>
+
+  <!-- INTRO -->
+  <section class="panel intro" id="intro">
+    <h2>Antes de empezar</h2>
+    <p style="margin:0;color:var(--ink-soft);font-size:15.5px">Son 24 afirmaciones. Para cada una, elige la frecuencia con la que corresponde a ti. Toma unos 10 minutos.</p>
+    <div class="scalekey">
+      <span class="chip"><b>1</b> Nunca</span>
+      <span class="chip"><b>2</b> Casi nunca</span>
+      <span class="chip"><b>3</b> Casi siempre</span>
+      <span class="chip"><b>4</b> Siempre</span>
+    </div>
+    <p class="note">No hay respuestas correctas ni incorrectas. El resultado es orientativo y no sustituye una evaluación clínica.</p>
+    <div class="btn-row">
+      <button class="btn btn-primary" id="startBtn">Comenzar evaluación →</button>
+    </div>
+  </section>
+
+  <!-- FORM -->
+  <form id="form" hidden></form>
+  <div class="btn-row" id="submitRow" hidden style="padding-bottom:30px">
+    <button class="btn btn-primary" id="submitBtn" disabled>Ver mi resultado</button>
+    <span class="alert" id="alert" hidden>Responde las 24 afirmaciones para continuar.</span>
+  </div>
+
+  <!-- RESULTS -->
+  <section id="results" hidden></section>
+
+  <footer>
+    Escala de Valoración de la Capacidad de Autocuidado (ASA) · Versión en español adaptada para población mexicana.<br>
+    Orem (2001) · Gallegos (1998) · Manrique &amp; Velandia (2009) · Díaz de León Castañeda et al. (2023).
+  </footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var ITEMS = [
+    "A medida que cambian las circunstancias, voy haciendo ajustes para mantener mi salud.",
+    "Reviso si las actividades que normalmente hago para mantenerme con salud son buenas.",
+    "Si tengo problemas para moverme o desplazarme, me las arreglo para conseguir ayuda.",
+    "Puedo hacer lo necesario para mantener limpio el ambiente donde vivo.",
+    "Primero hago lo que sea necesario para mantenerme con salud.",
+    "Creo que me faltan las fuerzas necesarias para cuidarme como debo.",
+    "Si quiero, puedo buscar las formas para cuidar mi salud y mejorar la que tengo ahora.",
+    "Cambio la frecuencia con que me baño para mantenerme limpio.",
+    "Hago cambios en mis alimentos para mantener el peso que me corresponde.",
+    "Cuando hay situaciones que me afectan, las manejo para que no afecten mi forma de ser.",
+    "Pienso en hacer ejercicio y descansar un poco durante el día, pero no tengo tiempo para hacerlo.",
+    "Cuando necesito ayuda, puedo recurrir a mis amigos de siempre.",
+    "Puedo dormir lo suficiente como para no sentirme cansado.",
+    "Cuando me dan orientación sobre mi salud, pido que me aclaren lo que no entiendo.",
+    "Examino mi cuerpo para ver si hay algún cambio.",
+    "He sido capaz de cambiar hábitos muy arraigados con tal de mejorar mi salud.",
+    "Cuando tengo que tomar una nueva medicina, recurro al profesional de salud para que me informe sobre los efectos secundarios.",
+    "Soy capaz de tomar medidas para evitar que mi familia y yo corramos peligro.",
+    "Soy capaz de evaluar qué tanto me sirve lo que hago para mantenerme con salud.",
+    "Por realizar mis ocupaciones diarias, es muy difícil que tenga tiempo para cuidarme.",
+    "Si mi salud se ve afectada, puedo conseguir información para saber qué hacer.",
+    "Si no puedo cuidarme, busco ayuda.",
+    "Puedo destinar un tiempo para mí.",
+    "A pesar de mis limitaciones para moverme, soy capaz de cuidarme como me gusta."
+  ];
+  // 1-based item numbers that are reverse-scored
+  var REVERSE = {6:true, 11:true, 20:true};
+  var LABELS = ["Nunca","Casi nunca","Casi siempre","Siempre"];
+
+  // Targeted tip shown when a given item scores low (raw 1-2)
+  var TIPS = {
+    5:"Priorizar tu salud entre las obligaciones del día.",
+    6:"Reconocer el cansancio y buscar apoyo cuando falta energía.",
+    9:"Ajustar la alimentación de forma sostenible, sin dietas extremas.",
+    11:"Reservar bloques cortos de descanso y movimiento en la agenda.",
+    13:"Cuidar la higiene y duración del sueño.",
+    15:"Prestar atención a las señales del propio cuerpo.",
+    20:"Proteger tiempo personal frente a la carga diaria.",
+    23:"Apartar momentos solo para ti, sin culpa."
+  };
+
+  var $ = function(id){return document.getElementById(id);};
+  var form = $("form"), answers = {};
+
+  // ---- theme toggle ----
+  $("themeBtn").addEventListener("click", function(){
+    var root = document.documentElement;
+    var cur = root.getAttribute("data-theme");
+    var dark = cur ? cur === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+    root.setAttribute("data-theme", dark ? "light" : "dark");
+  });
+
+  // ---- localStorage (best effort) ----
+  function save(){ try{ localStorage.setItem("asa_answers", JSON.stringify(answers)); }catch(e){} }
+  function load(){ try{ var r=localStorage.getItem("asa_answers"); return r?JSON.parse(r):{}; }catch(e){ return {}; } }
+
+  // ---- build questions ----
+  function buildForm(){
+    var saved = load();
+    var html = "";
+    for(var i=0;i<ITEMS.length;i++){
+      var n=i+1;
+      html += '<fieldset class="q" id="q'+n+'" style="border:1px solid var(--line);margin:0">'
+        + '<div class="q-head"><div class="q-num">'+n+'</div>'
+        + '<div class="q-text">'+ITEMS[i]+'</div></div>'
+        + '<div class="opts">';
+      for(var v=1;v<=4;v++){
+        var id="i"+n+"_"+v;
+        html += '<div class="opt">'
+          + '<input type="radio" name="q'+n+'" id="'+id+'" value="'+v+'">'
+          + '<label for="'+id+'"><span class="n">'+v+'</span><span class="t">'+LABELS[v-1]+'</span></label>'
+          + '</div>';
+      }
+      html += '</div></fieldset>';
+    }
+    form.innerHTML = html;
+
+    // restore + wire
+    for(var k in saved){ if(saved.hasOwnProperty(k)){ answers[k]=saved[k];
+      var el=document.getElementById("i"+k+"_"+saved[k]); if(el){ el.checked=true; markAnswered(k); } } }
+
+    form.addEventListener("change", function(e){
+      if(e.target && e.target.name && e.target.name.charAt(0)==="q"){
+        var num=e.target.name.slice(1);
+        answers[num]=parseInt(e.target.value,10);
+        markAnswered(num); save(); updateProgress();
+      }
+    });
+    updateProgress();
+  }
+
+  function markAnswered(num){ var q=$("q"+num); if(q) q.classList.add("answered"); }
+
+  function updateProgress(){
+    var done=Object.keys(answers).length;
+    $("count").textContent=done+" / 24";
+    $("fill").style.width=(done/24*100)+"%";
+    $("submitBtn").disabled = done<24;
+    if(done>=24) $("alert").hidden=true;
+  }
+
+  // ---- scoring ----
+  function score(){
+    var total=0;
+    for(var n=1;n<=24;n++){
+      var raw=answers[n];
+      total += REVERSE[n] ? (5-raw) : raw;
+    }
+    return total;
+  }
+  function level(total){
+    if(total>=76) return {key:"alto",label:"Autocuidado alto",color:"var(--good)"};
+    if(total>=70) return {key:"medio",label:"Autocuidado medio",color:"var(--mid)"};
+    return {key:"bajo",label:"Autocuidado por reforzar",color:"var(--low)"};
+  }
+
+  var INTERP = {
+    alto:"Tus respuestas reflejan un repertorio sólido de conductas de autocuidado. Reconoces tus necesidades, actúas para cubrirlas y buscas apoyo cuando lo requieres. El reto ahora es sostener estos hábitos, sobre todo en periodos de mayor carga o estrés.",
+    medio:"Tienes una base funcional de autocuidado, con áreas que conviene reforzar. En algunos aspectos actúas de forma consistente y en otros el cuidado se vuelve irregular, normalmente cuando el tiempo o la energía escasean.",
+    bajo:"Tus respuestas señalan que el autocuidado hoy queda con frecuencia en segundo plano. No es un juicio sobre ti: suele reflejar sobrecarga, falta de tiempo o de energía. Vale la pena identificar una o dos áreas y empezar por ahí, con apoyo si es posible."
+  };
+
+  var RECS = {
+    alto:[
+      {t:"Mantén lo que funciona",d:"Identifica los 2-3 hábitos que más te sostienen y protégelos en tu agenda como si fueran citas fijas."},
+      {t:"Anticípate al estrés",d:"Define de antemano qué cuidados no vas a soltar en las semanas más cargadas."},
+      {t:"Comparte y modela",d:"Tu autocuidado también influye en tu entorno; apoyar a otros refuerza tus propias prácticas."}
+    ],
+    medio:[
+      {t:"Elige una sola área",d:"En vez de cambiarlo todo, escoge el aspecto más irregular y trabájalo durante dos semanas."},
+      {t:"Vuélvelo rutina",d:"Ancla el nuevo hábito a algo que ya haces (p. ej. caminar después de comer) para que no dependa de la motivación."},
+      {t:"Revisa el descanso",d:"El sueño y las pausas suelen ser el primer eslabón que se debilita bajo presión."}
+    ],
+    bajo:[
+      {t:"Empieza muy pequeño",d:"Un cambio mínimo y diario (10 minutos) sostiene más que un plan ambicioso que abandonas en días."},
+      {t:"Busca apoyo",d:"Cuidarte no tiene que ser en solitario: apóyate en personas cercanas o en un profesional de salud."},
+      {t:"Reduce barreras",d:"Identifica qué te impide cuidarte (tiempo, energía, ánimo) y ajusta el entorno antes que la fuerza de voluntad."}
+    ]
+  };
+
+  // ---- render results ----
+  function renderResults(){
+    var total=score();
+    var lv=level(total);
+    var pct=(total-24)/(96-24)*100;
+
+    // weakest raw items (score 1-2), map to tips
+    var weak=[];
+    for(var n=1;n<=24;n++){
+      var raw=answers[n];
+      var effective = REVERSE[n] ? (5-raw) : raw;
+      if(effective<=2 && TIPS[n]) weak.push({n:n,eff:effective,tip:TIPS[n]});
+    }
+    weak.sort(function(a,b){return a.eff-b.eff;});
+    weak=weak.slice(0,3);
+
+    var recs=RECS[lv.key];
+    var recHtml="";
+    for(var r=0;r<recs.length;r++){
+      recHtml+='<div class="rec"><div class="ic">'+(r+1)+'</div><div><h4>'+recs[r].t+'</h4><p>'+recs[r].d+'</p></div></div>';
+    }
+
+    var focusHtml="";
+    if(weak.length){
+      focusHtml='<h3 class="sec" style="margin-top:8px">Áreas para poner el foco</h3>'
+        +'<div class="recs">';
+      for(var w=0;w<weak.length;w++){
+        focusHtml+='<div class="focus-item"><b>Ítem '+weak[w].n+'.</b> '+weak[w].tip+'</div>';
+      }
+      focusHtml+='</div>';
+    }
+
+    var res=$("results");
+    res.innerHTML =
+      '<section class="panel result-card">'
+        +'<div class="score-line">'
+          +'<span class="score-big" style="color:'+lv.color+'">'+total+'</span>'
+          +'<span class="score-of">de 96 puntos</span>'
+          +'<span class="level-badge" style="margin-left:auto;background:color-mix(in srgb,'+lv.color+' 16%,var(--surface));color:'+lv.color+'"><span class="dot" style="background:'+lv.color+'"></span>'+lv.label+'</span>'
+        +'</div>'
+        +'<div class="meter">'
+          +'<div class="meter-track">'
+            +'<div class="meter-zone z-low" style="width:63.9%"></div>'
+            +'<div class="meter-zone z-mid" style="width:8.3%"></div>'
+            +'<div class="meter-zone z-high" style="width:27.8%"></div>'
+            +'<div class="marker" id="marker" style="left:0"></div>'
+          +'</div>'
+          +'<div class="meter-labels"><span>Bajo · 24</span><span>Medio · 70-75</span><span>Alto · 96</span></div>'
+        +'</div>'
+        +'<p class="interp">'+INTERP[lv.key]+'</p>'
+      +'</section>'
+      +'<h3 class="sec">Recomendaciones</h3>'
+      +'<div class="recs">'+recHtml+'</div>'
+      + focusHtml
+      +'<div class="disclaimer"><b>Nota.</b> La Escala ASA es un instrumento validado con fines de tamizaje y reflexión. Los rangos son orientativos y no constituyen un diagnóstico. Ante malestar significativo, consulta a un profesional de la salud.</div>'
+      +'<div class="btn-row" style="padding-bottom:20px"><button class="btn btn-ghost" id="restartBtn">↺ Responder de nuevo</button></div>';
+
+    // show
+    $("topbar").hidden=true;
+    form.hidden=true;
+    $("submitRow").hidden=true;
+    res.hidden=false;
+    window.scrollTo({top:0,behavior:"smooth"});
+    // animate marker
+    requestAnimationFrame(function(){ requestAnimationFrame(function(){
+      var m=$("marker"); if(m) m.style.left=Math.max(1,Math.min(99,pct))+"%";
+    });});
+
+    $("restartBtn").addEventListener("click", function(){
+      answers={}; try{localStorage.removeItem("asa_answers");}catch(e){}
+      res.hidden=true;
+      buildForm();
+      $("intro").hidden=true;
+      $("topbar").hidden=false;
+      form.hidden=false;
+      $("submitRow").hidden=false;
+      window.scrollTo({top:0,behavior:"smooth"});
+    });
+  }
+
+  // ---- flow ----
+  $("startBtn").addEventListener("click", function(){
+    $("intro").hidden=true;
+    buildForm();
+    $("topbar").hidden=false;
+    form.hidden=false;
+    $("submitRow").hidden=false;
+    var first=$("q1"); if(first) first.scrollIntoView({behavior:"smooth",block:"start"});
+  });
+
+  $("submitBtn").addEventListener("click", function(){
+    if(Object.keys(answers).length<24){
+      $("alert").hidden=false;
+      // scroll to first unanswered
+      for(var n=1;n<=24;n++){ if(!answers[n]){ $("q"+n).scrollIntoView({behavior:"smooth",block:"center"}); break; } }
+      return;
+    }
+    renderResults();
+  });
+})();
+</script>
+
+</body>
+</html>
